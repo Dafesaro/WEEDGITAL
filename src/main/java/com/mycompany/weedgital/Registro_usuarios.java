@@ -4,19 +4,22 @@
  */
 package com.mycompany.weedgital;
 
+
+
 /**
  *
  * @author Daniel
  */
 public class Registro_usuarios extends javax.swing.JFrame {
-
+    
     /**
      * Creates new form Registro_usuarios
      */
     public Registro_usuarios() {
         initComponents();
     }
-
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -195,10 +198,8 @@ public class Registro_usuarios extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Registro_usuarios().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Registro_usuarios().setVisible(true);
         });
     }
 
