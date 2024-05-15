@@ -4,12 +4,20 @@
  */
 package com.mycompany.weedgital;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Daniel
  */
 public class INGRESO extends javax.swing.JFrame {
-
+     conexion con1=new conexion();
+     Connection conet;
+     Statement st;
+     ResultSet rs;
     /**
      * Creates new form INGRESO
      */
@@ -17,6 +25,32 @@ public class INGRESO extends javax.swing.JFrame {
         initComponents();
     }
 
+    
+    public void ingreso () {
+        try {
+            String Mail=Mailtxt.getText();
+            String Pass=String.valueOf(Passtxt.getPassword());
+            String sql="select * from usuario where Mail='"+Mail+"'"+"and Pass='"+Pass+"'";
+            
+            conet=con1.getConnection();
+            st=conet.createStatement();
+            rs=st.executeQuery(sql);
+            if(rs.next()){
+                JOptionPane.showMessageDialog(null,"Bienvenido");
+                this.dispose();
+                PRINCIPAL P=new PRINCIPAL();
+                P.setVisible(true);
+            }else{
+                JOptionPane.showMessageDialog(null,"Email o Contraseña incorrectos");
+                Mailtxt.setText("");
+                Passtxt.setText("");
+                
+            }
+        }catch(Exception e){
+            System.out.println(e);
+            
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -30,16 +64,16 @@ public class INGRESO extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        Mailtxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
+        Passtxt = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel5.setText("CORREO");
+        jLabel5.setText("EMAIL");
 
         jLabel6.setText("CONTRASEÑA");
 
@@ -53,9 +87,9 @@ public class INGRESO extends javax.swing.JFrame {
 
         jLabel4.setText("SI SI AÚN NO TE ENCUENTRAS REGISTRADO HAS CLICK ");
 
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        Mailtxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                MailtxtActionPerformed(evt);
             }
         });
 
@@ -75,6 +109,8 @@ public class INGRESO extends javax.swing.JFrame {
                 jRadioButton1ActionPerformed(evt);
             }
         });
+
+        Passtxt.setText("jPasswordField1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -97,12 +133,12 @@ public class INGRESO extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(Mailtxt, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
                             .addComponent(jLabel5)
                             .addComponent(jRadioButton1)
-                            .addComponent(jLabel6))
+                            .addComponent(jLabel6)
+                            .addComponent(Passtxt))
                         .addGap(135, 135, 135))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButton1)
@@ -118,11 +154,11 @@ public class INGRESO extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Mailtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Passtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -138,16 +174,17 @@ public class INGRESO extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        ingreso();
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        // TODO add your handling code here:
+       
     }//GEN-LAST:event_jRadioButton1ActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void MailtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MailtxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_MailtxtActionPerformed
 
     /**
      * @param args the command line arguments
@@ -185,6 +222,8 @@ public class INGRESO extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField Mailtxt;
+    private javax.swing.JPasswordField Passtxt;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
@@ -193,7 +232,5 @@ public class INGRESO extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 }

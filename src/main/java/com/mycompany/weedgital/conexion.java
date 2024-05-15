@@ -17,7 +17,7 @@ import java.sql.DriverManager;
     
     
     
-    public void conexion () {
+    public  conexion () {
     
     try{
        Class.forName("com.mysql.cj.jdbc.Driver");

@@ -4,12 +4,20 @@
  */
 package com.mycompany.weedgital;
 
+import java.sql.Connection;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Daniel
  */
 public class ENVIO extends javax.swing.JFrame {
 
+    
+    conexion co=new conexion();
+    Connection conet;
+    Statement st;
     /**
      * Creates new form ENVIO
      */
@@ -17,6 +25,26 @@ public class ENVIO extends javax.swing.JFrame {
         initComponents();
     }
 
+    
+    public void AgregarEnvio() {
+    String pais = jTextField4.getText();
+    String departamento = jTextField5.getText();
+    String ciudad = jTextField6.getText();
+    String direccion = jTextField7.getText();
+    String telefono = jTextField8.getText();
+
+    try {
+        String sql = "INSERT INTO envio (pais, departamento, ciudad, direccion, telefono) VALUES ('"
+                     + pais + "', '" + departamento + "', '" + ciudad+ "', '" + direccion + "', '" + telefono + "')";
+        conet = co.getConnection();
+        st = conet.createStatement();
+        st.executeUpdate(sql);
+        JOptionPane.showMessageDialog(null, "Se ha registrado el envío correctamente");
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al registrar el envío: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -187,18 +215,18 @@ public class ENVIO extends javax.swing.JFrame {
                             .addComponent(jLabel23)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(109, 109, 109)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(50, 50, 50)
-                                .addComponent(jButton1))))
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(42, 42, 42)
                         .addComponent(jLabel20))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(93, 93, 93)
                         .addComponent(jLabel4)))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(187, 187, 187))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -243,7 +271,7 @@ public class ENVIO extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+AgregarEnvio ();        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

@@ -10,7 +10,6 @@ package com.mycompany.weedgital;
  */
 public class Proyecto {
     public static void main (String[] args){
-        conexion ca=new conexion();
-        ca.conexion();
+        
     }
 }
