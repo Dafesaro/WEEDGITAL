@@ -7,6 +7,11 @@
     <packaging>jar</packaging>
     <dependencies>
     <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports</artifactId>
+        <version>6.20.6</version>
+    </dependency>
+    <dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
         <version>8.0.30</version> <!-- O la versión más reciente disponible -->

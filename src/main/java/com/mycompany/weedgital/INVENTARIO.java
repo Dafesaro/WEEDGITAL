@@ -4,11 +4,18 @@
  */
 package com.mycompany.weedgital;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -21,12 +28,57 @@ public class INVENTARIO extends javax.swing.JFrame {
     Connection conet;
     Statement st;
     ResultSet rs;
+    int idc;
+    int idc2;
     
     public INVENTARIO() {
         initComponents();
         consultar();
         
     }
+    
+    public JasperPrint reporteinventario() {
+    conet=co.getConnection();
+    InputStream inputStream= getClass().getResourceAsStream("/Reportes/weedigital.jasper");
+    if (inputStream==null){
+        System.out.println("No se encontró el reporte");
+        return null;
+    }
+    try{
+       JasperReport jr = (JasperReport)JRLoader.loadObject(inputStream);
+       JasperPrint jp = JasperFillManager.fillReport(jr,null,conet);
+       if(jp.getPages().isEmpty()){
+           System.out.println("el reporte no tiene datos");
+           return null;
+       }
+       return jp;
+    }catch(JRException ex){
+        System.out.println("Error al generar el reporte"+ex);
+        ex.printStackTrace();
+    } finally {
+        try{
+            inputStream.close();
+        }catch (Exception ex){
+            System.out.println("Error alc errar input"+ex);
+            ex.printStackTrace();
+        }
+    }
+    return null;
+    
+    
+} 
+    
+            
+            
+            
+    public void limpiar(){
+    for (int i=0;i<=jinventario.getRowCount();i++)
+    {
+    modelo.removeRow(i);
+    i=i-1;
+     } 
+    }
+    
     public void Agregar(){
        
         String Nombre = nameprod.getText();
@@ -48,6 +100,8 @@ public class INVENTARIO extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error al ingresar producto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
+       consultar();
+        reset();
     }
     public void consultar(){
    String sql= "select * from productos";
@@ -57,6 +111,8 @@ public class INVENTARIO extends javax.swing.JFrame {
    rs=st.executeQuery(sql);
    Object[] producto=new Object[4];
    modelo = (DefaultTableModel) jinventario.getModel();
+   modelo.setRowCount(0);
+
    while(rs.next()){
          
          
@@ -75,19 +131,65 @@ public class INVENTARIO extends javax.swing.JFrame {
    
   }
     
+    public void actualizar(){
+        String Nombre = nameprod.getText();
+        String Descripcion = descripprod.getText();
+        String Precio = precioprod.getText();
+        String Cantidad = cantiprod.getText() ;
+   
+   try{
+   String sql="update productos set nombre='"+Nombre+"',descripción='"+Descripcion+"',precio='"+Precio+"',cantidad='"+Cantidad+"' where nombre='"+jinventario.getValueAt(jinventario.getSelectedRow(),0)+"';";
+      conet=co.getConnection();
+      st=conet.createStatement();
+      st.executeUpdate(sql);
+       JOptionPane.showMessageDialog(null,"Se ha actualizado el registro");
+   limpiar();
+   
+   }catch(Exception e){
+   }
+   consultar();
+    nameprod.setText("");
+        descripprod.setText("");
+        precioprod.setText("");
+        cantiprod.setText("");
+   }
+    
+    public void eliminar(){
+   int fila =jinventario.getSelectedRow();
+   try{
+     if(fila<0){
+     
+     JOptionPane.showMessageDialog(null,"Seleccione una fila");
+     
+     }else{
+     
+     String sql="delete from productos where nombre='"+jinventario.getValueAt(jinventario.getSelectedRow(),0)+"';";
+     conet=co.getConnection();
+      st=conet.createStatement();
+      st.executeUpdate(sql);
+      JOptionPane.showMessageDialog(null,"Se ha eliminado el registro");
+      limpiar();
+     }
+  }catch(Exception e){
+   }
+   consultar();
+     reset();   
+   }
     /**
      * Creates new form INVENTARIO
      */
     
     
-    public void limpiar(){
-    for (int i=0;i<=jinventario.getRowCount();i++)
-    {
-    modelo.removeRow(i);
-    i=i-1;
-     } 
-    }
+    
 
+    
+    public void reset(){
+   
+   nameprod.setText("");
+        descripprod.setText("");
+        precioprod.setText("");
+        cantiprod.setText("");
+   }
     
     
     /**
@@ -115,6 +217,7 @@ public class INVENTARIO extends javax.swing.JFrame {
         nameprod = new javax.swing.JTextField();
         descripprod = new javax.swing.JTextField();
         cantiprod = new javax.swing.JTextField();
+        btnimprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -139,6 +242,11 @@ public class INVENTARIO extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        jinventario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jinventarioMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(jinventario);
@@ -196,6 +304,13 @@ public class INVENTARIO extends javax.swing.JFrame {
             }
         });
 
+        btnimprimir.setText("Imprimir");
+        btnimprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnimprimirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -212,7 +327,9 @@ public class INVENTARIO extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel20)
-                        .addGap(69, 285, Short.MAX_VALUE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnimprimir)
+                        .addGap(76, 76, 76))))
             .addGroup(layout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addComponent(jButton2)
@@ -246,7 +363,9 @@ public class INVENTARIO extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel20)
+                    .addComponent(btnimprimir))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -285,11 +404,12 @@ Agregar();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+eliminar();
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+actualizar();        // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void precioprodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precioprodActionPerformed
@@ -307,6 +427,33 @@ Agregar();
     private void cantiprodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cantiprodActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cantiprodActionPerformed
+
+    private void jinventarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jinventarioMouseClicked
+          
+        int fila =jinventario.getSelectedRow();//obteniendo el indice o linea seleccionada
+        if(fila==-1){
+        JOptionPane.showMessageDialog(null,"seleccione una fila");
+       }else{
+        String nombre=(String) jinventario.getValueAt(fila,0);
+        String descripcion=(String) jinventario.getValueAt(fila,1);
+        idc=Integer.parseInt((String)jinventario.getValueAt(fila,2).toString());
+        idc2=Integer.parseInt((String)jinventario.getValueAt(fila,3).toString());
+        
+       nameprod.setText(nombre);
+        descripprod.setText(descripcion);
+        precioprod.setText(""+idc);
+        cantiprod.setText(""+idc2);
+        
+     
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jinventarioMouseClicked
+
+    private void btnimprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnimprimirActionPerformed
+        JasperPrint jp = reporteinventario();
+        JasperViewer.viewReport(jp);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnimprimirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -344,6 +491,7 @@ Agregar();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnimprimir;
     private javax.swing.JTextField cantiprod;
     private javax.swing.JTextField descripprod;
     private javax.swing.JButton jButton1;
