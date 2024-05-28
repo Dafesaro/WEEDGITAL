@@ -8,8 +8,11 @@ package com.mycompany.weedgital;
  *
  * @author Daniel
  */
-public class Proyecto {
+public class WEEDGITAL {
     public static void main (String[] args){
-        
+     INGRESO ingresoForm = new INGRESO();
+
+        // Hacer visible el formulario de ingreso
+        ingresoForm.setVisible(true);   
     }
 }

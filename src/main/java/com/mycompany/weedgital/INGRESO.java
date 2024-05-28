@@ -23,9 +23,10 @@ public class INGRESO extends javax.swing.JFrame {
      */
     public INGRESO() {
         initComponents();
+        
     }
 
-    
+    public int userId;
     public void ingreso () {
         try {
             String Mail=Mailtxt.getText();
@@ -36,6 +37,8 @@ public class INGRESO extends javax.swing.JFrame {
             st=conet.createStatement();
             rs=st.executeQuery(sql);
             if(rs.next()){
+                userId = rs.getInt("ID");
+                SESSION.setUserId(userId);
                 JOptionPane.showMessageDialog(null,"Bienvenido");
                 this.dispose();
                 PRINCIPAL P=new PRINCIPAL();

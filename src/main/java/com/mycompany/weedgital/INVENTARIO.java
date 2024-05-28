@@ -30,10 +30,13 @@ public class INVENTARIO extends javax.swing.JFrame {
     ResultSet rs;
     int idc;
     int idc2;
+    PRINCIPAL principal;
     
     public INVENTARIO() {
         initComponents();
         consultar();
+        principal = new PRINCIPAL();
+        principal.setVisible(true);
         
     }
     
@@ -112,7 +115,8 @@ public class INVENTARIO extends javax.swing.JFrame {
    Object[] producto=new Object[4];
    modelo = (DefaultTableModel) jinventario.getModel();
    modelo.setRowCount(0);
-
+   
+   
    while(rs.next()){
          
          
